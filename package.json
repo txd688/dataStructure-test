@@ -1,0 +1,11 @@
+{
+  "name": "wukong",
+  "version": "1.0.0",
+  "description": "数据结构",
+  "main": "linkedList.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "type":"module"
+}
