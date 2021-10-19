@@ -39,7 +39,6 @@ class Node{
       if(pathChildNode < 0){
         throw new Error("无法找到匹配的值！")
       }else{
-        console.log(22)
         this.children.splice(pathChildNode.index, 1);
       }
     }else{
