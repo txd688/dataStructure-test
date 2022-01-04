@@ -1,68 +1,106 @@
 // 节点
-class Node{
-  constructor(value, parentNode = null){
+class Node {
+  constructor(value, parentNode = null) {
     this.children = []; // 子节点
     this.parent = parentNode; // 父节点
     this.value = value; // 节点内容
   }
   // 添加子节点
-  addNode(value){
+  addNode(value) {
     const path = value.split("/");
-    if(path.length === 0){
+    if (path.length === 0) {
       return;
-    }else if(path.length === 1){
+    } else if (path.length === 1) {
       const node = new Node(value, this);
       this.children.push(node);
-      return { node, index: this.children.length - 1 };
+      return {
+        node,
+        index: this.children.length - 1
+      };
     }
     const pathChildNode = this.children.find(child => child.value === path[0]);
-    if(pathChildNode){
+    if (pathChildNode) {
       // 如果有这个节点，继续往下查找
       pathChildNode.addNode(path.slice(1).join("/"));
-    }else{
+    } else {
       // 没有这个节点，创建这个节点,并继续往下查找
       const node = new Node(path[0], this);
       node.addNode(path.slice(1).join("/"));
       this.children.push(node);
-      return { node, index: this.children.length - 1 };
+      return {
+        node,
+        index: this.children.length - 1
+      };
     }
   }
   // 删除子节点
-  removeNode(value){
+  removeNode(value) {
     const path = value.split("/");
-    if(path.length === 0){
+    if (path.length === 0) {
       // 没有任何节点
       return;
-    }else if(path.length === 1){
+    } else if (path.length === 1) {
       // 当前要删除的节点目录
       const pathChildNode = this.children.findIndex(child => child.value === path[0]);
-      if(pathChildNode < 0){
+      if (pathChildNode < 0) {
         throw new Error("无法找到匹配的值！")
-      }else{
+      } else {
         this.children.splice(pathChildNode.index, 1);
       }
-    }else{
+    } else {
       // 需要继续往下查询
       const pathChildNode = this.children.find(child => child.value === path[0]);
-      if(pathChildNode){
+      if (pathChildNode) {
         pathChildNode.removeNode(path.slice(1).join("/"));
-      }else{
-        throw new Error("无法找到匹配的值！路径为："+path[0]);
+      } else {
+        throw new Error("无法找到匹配的值！路径为：" + path[0]);
+      }
+    }
+  }
+  // 查找节点(深度优先DFS)
+  findNode(value) {
+    for (const child of this.children) {
+      if (child.value === value) {
+        return child;
+      }
+      const nestedChildNode = child.findNode(value)
+      if (nestedChildNode) {
+        return nestedChildNode;
+      }
+    }
+  }
+  // 查找节点(广度优先BFS)
+  findNode2(value) {
+    for (const child of this.children) {
+      if (child.value === value) {
+        return child;
+      }
+    }
+    for (const child of this.children) {
+      const nestedChildNode = child.findNode2(value)
+      if (nestedChildNode) {
+        return nestedChildNode;
       }
     }
   }
 }
 
 // 树
-class Tree{
-  constructor(rootValue){
+class Tree {
+  constructor(rootValue) {
     this.root = new Node(rootValue);
   }
-  add(path){
+  add(path) {
     this.root.addNode(path);
   }
-  remove(path){
+  remove(path) {
     this.root.removeNode(path);
+  }
+  find(value) {
+    if (this.root.value === value) {
+      return this.root;
+    }
+    return this.root.findNode(value)
   }
 }
 
@@ -73,7 +111,7 @@ fileDirectory.add("游戏文件夹/阴阳师");
 fileDirectory.add("游戏文件夹/hellow/demo.js");
 fileDirectory.add("学习文件夹");
 fileDirectory.remove("游戏文件夹/hellow/demo.js");
-console.log(fileDirectory);
+console.log(fileDirectory.find("阴阳师"));
 
 /*
 
