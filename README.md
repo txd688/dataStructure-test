@@ -7,7 +7,7 @@
 3. 队列 queue.js
 4. 哈希表 hashTable.js
 5. 树 tree.js
-6. 二叉搜索树 basic-tree.js
+6. 二叉搜索树(包括平衡二叉搜索树AVL) basic-tree.js
 
 ### 项目启动（node环境）
 

@@ -6,6 +6,26 @@ class Node {
     this.left = null;
     this.parent = null;
   }
+  // AVL树自平衡
+  get leftDepth() {
+    if (!this.left) {
+      return 0;
+    }
+    return this.left.depth + 1;
+  }
+  get rightDepth() {
+    if (!this.right) {
+      return 0;
+    }
+    return this.right.depth + 1;
+  }
+  get depth() {
+    return Math.max(this.leftDepth, this.rightDepth);
+  }
+  // 平衡因子
+  get balanceFactor() {
+    return this.leftDepth - this.rightDepth;
+  }
   add(value) {
     if (this.value === null) {
       this.value = value;
@@ -111,6 +131,67 @@ class BasicTree {
   }
 }
 
+// 二叉搜索树自平衡
+class AVLTree extends BasicTree {
+  add(value) {
+    super.add(value);
+    let curNode = this.root.find(value);
+    while(curNode){
+      this.balance(curNode);
+      curNode =  curNode.parent;
+    }
+  }
+  remove(value) {
+    super.remove(value);
+    this.balance(this.root);
+  }
+  balance(node) {
+    if (node.balanceFactor < -1) {
+      if (node.right.balanceFactor < 0) {
+        // 单向左旋
+        this.rotateLeft(node);
+      } else if (node.right.balanceFactor > 0) {
+        // 双向旋转(先右后左)
+        this.rotateRightLeft(node)
+      }
+    } else if (node.balanceFactor > 1) {
+      if (node.left.balanceFactor < 0) {
+        // 双向旋转(先左后右)
+        this.rotateLeftRight(node)
+      } else if (node.left.balanceFactor > 0) {
+        // 单向右旋
+        this.rotateRight(node);
+      }
+    }
+  }
+  rotateLeft(node){
+    const rightNode = node.right;
+    node.right = null;
+    if(node.parent){
+      node.parent.right = rightNode;
+      node.parent.right.parent = node.parent;
+    } else if(node === this.root) {
+      this.root = rightNode;
+      this.root.parent = null;
+    }
+    if(rightNode.left){
+      node.right = rightNode.left;
+      node.right.parent = node;
+    }
+    rightNode.left = node;
+    rightNode.left.parent = rightNode;
+  }
+  rotateRightLeft(){
+
+  }
+  rotateLeftRight(){
+
+  }
+  rotateRight(){
+
+  }
+}
+
 const tree = new BasicTree();
 tree.add(20);
 tree.add(10);
@@ -120,4 +201,10 @@ tree.add(30);
 tree.add(5);
 tree.add(3);
 tree.add(4);
-console.log(tree)
+// console.log(tree)
+
+const tree2 = new AVLTree();
+tree2.add(1);
+tree2.add(2);
+tree2.add(3);
+console.log(tree2)
