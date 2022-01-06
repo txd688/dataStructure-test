@@ -164,6 +164,7 @@ class AVLTree extends BasicTree {
       }
     }
   }
+  // 单向左旋
   rotateLeft(node){
     const rightNode = node.right;
     node.right = null;
@@ -181,14 +182,57 @@ class AVLTree extends BasicTree {
     rightNode.left = node;
     rightNode.left.parent = rightNode;
   }
-  rotateRightLeft(){
-
+  // 单向右旋
+  rotateRight(node){
+    const leftNode = node.left;
+    node.left = null;
+    if(node.parent){
+      node.parent.left = leftNode;
+      node.parent.left.parent = node.parent;
+    } else if(node === this.root) {
+      this.root = leftNode;
+      this.root.parent = null;
+    }
+    if(leftNode.right){
+      node.right = leftNode.right;
+      node.right.parent = node;
+    }
+    leftNode.right = node;
+    leftNode.right.parent = leftNode;
   }
-  rotateLeftRight(){
-
+  // 双向旋转(先右后左)
+  rotateRightLeft(node){
+    let rightNode = node.right;
+    node.right = null;
+    const rightLeftNode = rightNode.left;
+    rightNode.left = null;
+    if(rightLeftNode.right){
+      rightNode.left = rightLeftNode.right;
+      rightNode.left.parent = rightNode;
+      rightLeftNode.right = null;
+    }
+    node.right = rightLeftNode;
+    node.right.parent = node;
+    rightLeftNode.right = rightNode;
+    rightLeftNode.right.parent = rightLeftNode;
+    this.rotateLeft(node);
   }
-  rotateRight(){
-
+  // 双向旋转(先左后右)
+  rotateLeftRight(node){
+    let leftNode = node.left;
+    node.left = null;
+    const leftRightNode = leftNode.right;
+    leftNode.right = null;
+    if(leftRightNode.left){
+      leftNode.right = leftRightNode.left;
+      leftNode.right.parent = leftNode;
+      leftRightNode.left = null;
+    }
+    node.left = leftRightNode;
+    node.left.parent = node;
+    leftRightNode.left = leftNode;
+    leftRightNode.left.parent = leftRightNode;
+    this.rotateRight(node);
   }
 }
 
@@ -204,7 +248,7 @@ tree.add(4);
 // console.log(tree)
 
 const tree2 = new AVLTree();
-tree2.add(1);
-tree2.add(2);
 tree2.add(3);
+tree2.add(2);
+tree2.add(1);
 console.log(tree2)
